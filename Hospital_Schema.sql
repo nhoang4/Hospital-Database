@@ -11,7 +11,7 @@ create table Test
     test_Name VARCHAR(20),
     prescription varchar(50),
     Dr_ID VARCHAR(20),
-    prescr_price Int,
+    prescr_price Decimal (5,2),
     primary key (test_ID),
     foreign key (Dr_ID)references Doctor(Dr_ID)
 );
@@ -19,8 +19,8 @@ create table Test
 create table Nurse
 (
     Nur_ID VARCHAR(20) not null,
-    N_nurse VARCHAR (20),
     Nur_Special VARCHAR(50),
+    N_nurse VARCHAR (20),
     Dr_ID varchar(20),
     P_ID varchar(20),
     primary key (Nur_ID),
@@ -30,7 +30,6 @@ create table Nurse
 
 create table Doctor (
     /*Doctor (Dr_ID,Dr_Special, N_Dr);*/
-
     Dr_ID VARCHAR(20) not null,
     Dr_Special VARCHAR(50),
     N_Dr VARCHAR (20),
@@ -57,6 +56,38 @@ create table Administrative(
     Dr_ID VARCHAR (10) not null,
     PRIMARY KEY(Admin_ID),
     foreign key (Dr_ID) references Doctor(Dr_ID)
+);
+
+
+create table Specializing(
+	dept_name VARCHAR(20),
+	Dr_ID VARCHAR(20) not null,
+    Nur_ID VARCHAR(20) not null,
+	CONSTRAINT PK_Specializing PRIMARY KEY (Dr_ID,Nur_ID),
+	foreign key (Dr_ID) references Doctor(Dr_ID),
+	foreign key (Nur_ID) references Nurse(Nur_ID)
+);
+
+
+create table Recieving_Payment
+(
+    # Receiving_Payment (P_ID, Admin_ID, Bill_Total);
+    P_ID       VARCHAR(20) not null,
+    Admin_ID   VARCHAR(20) not null,
+    Bill_Total Decimal(5, 2),
+    constraint P_K_Recieving_Payment primary key (P_ID, Admin_ID),
+    foreign key (P_ID) references Patient (P_ID),
+    foreign key (Admin_ID) references Administrative (Admin_ID)
+);
+
+create table PatientNurse
+(
+    Nur_ID VARCHAR(20) not null,
+    P_ID       VARCHAR(20) not null,
+    Patient_file Varchar(20),
+    constraint P_K_Patient_Nurse primary key (P_ID, Nur_ID),
+    foreign key (P_ID) references Patient (P_ID),
+    foreign key (Nur_ID) references Nurse(Nur_ID)
 );
 
 
@@ -191,6 +222,87 @@ insert into Nurse values ('N922', 'Neurology', 'Hermes' ,'D913','P113');
 insert into Nurse values ('N923', 'Family Medicine', 'Hades','D911','P111');
 insert into Nurse values ('N924', 'Urology', 'Persephone','D912','P112');
 
+
+insert into Specializing values ('Neurology', 'D900', 'N900');
+insert into Specializing values ('Neurology', 'D915', 'N915');
+insert into Specializing values ('Neurology', 'D922', 'N922');
+insert into Specializing values ('Immunology', 'D901', 'N901');
+insert into Specializing values ('Anesthesiology', 'D902', 'N902');
+insert into Specializing values ('Anesthesiology', 'D918', 'N918');
+insert into Specializing values ('Dermatology', 'D903', 'N903');
+insert into Specializing values ('Dermatology', 'D916', 'N916');
+insert into Specializing values ('Radiology', 'D904', 'N904');
+insert into Specializing values ('Emergency Medicine', 'D905', 'N905');
+insert into Specializing values ('Family Medicine', 'D906', 'N905');
+insert into Specializing values ('Family Medicine', 'D919', 'N919');
+insert into Specializing values ('Family Medicine', 'D923', 'N923');
+insert into Specializing values ('Gynecology', 'D907', 'N907');
+insert into Specializing values ('Gynecology', 'D917', 'N917');
+insert into Specializing values ('Cardiology', 'D909', 'N909');
+insert into Specializing values ('Cardiology', 'D920', 'N920');
+insert into Specializing values ('Ophthalmology', 'D908', 'N908');
+insert into Specializing values ('Orthopedics', 'D910', 'N910');
+insert into Specializing values ('Orthopedics', 'D921', 'N921');
+insert into Specializing values ('Oncology', 'D911', 'N911');
+insert into Specializing values ('Pediatrics', 'D912', 'N912');
+insert into Specializing values ('Psychiatry', 'D913', 'N913');
+insert into Specializing values ('Urology', 'D914', 'N914');
+insert into Specializing values ('Urology', 'D924', 'N924');
+
+
+
+insert into PatientNurse values ('N900', 'P124', 'Mashell' );
+insert into PatientNurse values ('N901', 'P123', 'Jacob' );
+insert into PatientNurse values ('N902', 'P122', 'Nhan' );
+insert into PatientNurse values ('N903', 'P121', 'Lmao' );
+insert into PatientNurse values ('N904', 'P120', 'Frank' );
+insert into PatientNurse values ('N905', 'P119', 'Herbert' );
+insert into PatientNurse values ('N906', 'P118', 'Jake' );
+insert into PatientNurse values ('N907', 'P117','Steven' );
+insert into PatientNurse values ('N908', 'P116', 'Mike' );
+insert into PatientNurse values ('N909', 'P115','Bob' );
+insert into PatientNurse values ('N910', 'P114','Malala' );
+insert into PatientNurse values ('N911', 'P113','Elizabeth' );
+insert into PatientNurse values ('N912', 'P112','Maya' );
+insert into PatientNurse values ('N913', 'P111','Anne' );
+insert into PatientNurse values ('N914', 'P110','Jane' );
+insert into PatientNurse values ('N915', 'P109','Cesear' );
+insert into PatientNurse values ('N916', 'P108', 'Eugene' );
+insert into PatientNurse values ('N917', 'P107','Richard' );
+insert into PatientNurse values ('N918', 'P106','Quincy' );
+insert into PatientNurse values ('N919', 'P105','Francisco' );
+insert into PatientNurse values ('N920', 'P104','Tony' );
+insert into PatientNurse values ('N921', 'P103','Jack' );
+insert into PatientNurse values ('N922', 'P102','Charles' );
+insert into PatientNurse values ('N923', 'P101','Money');
+insert into PatientNurse values ('N924', 'P100','Jeff');
+
+
+insert into Recieving_Payment values ('P124','A900', 123.45 );
+insert into Recieving_Payment values ('P123','A901', 476.89 );
+insert into Recieving_Payment values ('P122', 'A902',456.98 );
+insert into Recieving_Payment values ('P121','A903', 982.78 );
+insert into Recieving_Payment values ('P120','A904', 900.67 );
+insert into Recieving_Payment values ('P119','A905', 111.11 );
+insert into Recieving_Payment values ('P118','A906', 643.76 );
+insert into Recieving_Payment values ('P117','A907',987.65 );
+insert into Recieving_Payment values ('P116','A908', 876.54 );
+insert into Recieving_Payment values ('P115','A909',765.43 );
+insert into Recieving_Payment values ('P114','A910',654.32 );
+insert into Recieving_Payment values ('P113','A911',543.21);
+insert into Recieving_Payment values ('P112','A912',432.21 );
+insert into Recieving_Payment values ('P111','A913',458.32 );
+insert into Recieving_Payment values ('P110','A914',876.33 );
+insert into Recieving_Payment values ('P109','A915',676.69 );
+insert into Recieving_Payment values ('P108','A916', 346.51 );
+insert into Recieving_Payment values ('P107','A917',999.99);
+insert into Recieving_Payment values ('P106','A918',888.88 );
+insert into Recieving_Payment values ('P105','A919',777.77 );
+insert into Recieving_Payment values ('P104','A920',555.55 );
+insert into Recieving_Payment values ('P103','A921',444.44);
+insert into Recieving_Payment values ('P102','A922',333.33);
+insert into Recieving_Payment values ('P101','A923',222.22);
+insert into Recieving_Payment values ('P100','A924',659.32);
 
 
 
