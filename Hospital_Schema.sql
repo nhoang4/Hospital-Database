@@ -312,7 +312,7 @@ select Patient_file from PatientNurse where Nur_ID = 'N923' and P_ID = 'P101';
 select Nur_ID, Dr_ID from Specializing where dept_name = 'Oncology';
 select P_ID ,Bill_Total from Recieving_Payment where Bill_Total>500;
 select PatientNurse.P_ID, Nurse.Nur_Special as Department from PatientNurse, Nurse where PatientNurse.Nur_ID = Nurse.Nur_ID;
-Select p.In_date, p.Out_Date, p.insurance, r.Bill_total from Patient p, Recieving_Payment r where N_patient LIKE "%%";
+Select p.In_date, p.Out_Date, p.Insurance, r.Bill_total from Patient p, Recieving_Payment r where r.P_ID = p.P_ID;
 select Doctor.N_Dr as Doctor_Name, Test.prescription as Prescription from Doctor, Test where Test.Dr_ID = Doctor.Dr_ID;
 SELECT DISTINCT dept_name as Unique_Department_Name from Specializing;
 select Test.test_Name, Test.Dr_ID,Specializing.dept_name from Test, Specializing where Specializing.Dr_ID = Test.Dr_ID;
