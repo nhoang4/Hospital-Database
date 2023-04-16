@@ -144,6 +144,7 @@ insert into Patient values ('P122', 'Nhan', '1/4/2022','2/27/2022', 'Blue Cross 
 insert into Patient values ('P123', 'Jacob', '2/21/2021','12/1/2022', 'CIGNA', 'D924');
 insert into Patient values ('P124', 'Mashell', '3/21/2022','10/31/2022', 'Molina Health', 'D921');
 
+
 insert into Administrative values ('A900', '0', 1111, 'Katniss' , 'D901');
 insert into Administrative values ('A901', '1', 1112, 'Peeta' , 'D903');
 insert into Administrative values ('A902', '2', 1113,  'Gale' , 'D921');
@@ -170,6 +171,7 @@ insert into Administrative values ('A922', '22', 1133,  'Wiress' , 'D919');
 insert into Administrative values ('A923', '23', 1134, 'Thresh', 'D920');
 insert into Administrative values ('A924', '24', 1135, 'Gloss', 'D922');
 
+
 insert into Test values ( 'T101', '04/19/22', 'bloodwork', 'morphine', 'D900', '100' );
 insert into Test values ( 'T325', '03/25/22', 'allergy', 'benadryl', 'D901', '150');
 insert into Test values ( 'T419', '05/26/22', 'bacteria culture', 'metformin', 'D902', '177' );
@@ -195,6 +197,7 @@ insert into Test values ( 'T999', '11/06/22', 'allergy ', 'lisinopril', 'D921', 
 insert into Test values ( 'T433', '12/07/22', 'strep test', 'morphine', 'D922', '100' );
 insert into Test values ( 'T299', '01/08/22', 'bloodwork', 'miralax','D923', '100' );
 insert into Test values ( 'T656', '02/09/22', 'concussion', 'tylenol', 'D924', '100' );
+
 
 insert into Nurse values ('N900', 'Neurology', 'Percy', 'D924','P124');
 insert into Nurse values ('N901', 'Immunology', 'Annabeth','D900','P100'  );
@@ -250,7 +253,6 @@ insert into Specializing values ('Urology', 'D914', 'N914');
 insert into Specializing values ('Urology', 'D924', 'N924');
 
 
-
 insert into PatientNurse values ('N900', 'P124', 'Mashell' );
 insert into PatientNurse values ('N901', 'P123', 'Jacob' );
 insert into PatientNurse values ('N902', 'P122', 'Nhan' );
@@ -303,6 +305,21 @@ insert into Recieving_Payment values ('P103','A921',444.44);
 insert into Recieving_Payment values ('P102','A922',333.33);
 insert into Recieving_Payment values ('P101','A923',222.22);
 insert into Recieving_Payment values ('P100','A924',659.32);
+
+
+# Example queries
+select Patient_file from PatientNurse where Nur_ID = 'N923' and P_ID = 'P101';
+select Nur_ID, Dr_ID from Specializing where dept_name = 'Oncology';
+select P_ID ,Bill_Total from Recieving_Payment where Bill_Total>500;
+select PatientNurse.P_ID, Nurse.Nur_Special as Department from PatientNurse, Nurse where PatientNurse.Nur_ID = Nurse.Nur_ID;
+Select p.In_date, p.Out_Date, p.insurance, r.Bill_total from Patient p, Recieving_Payment r where N_patient LIKE "%%";
+select Doctor.N_Dr as Doctor_Name, Test.prescription as Prescription from Doctor, Test where Test.Dr_ID = Doctor.Dr_ID;
+SELECT DISTINCT dept_name as Unique_Department_Name from Specializing;
+select Test.test_Name, Test.Dr_ID,Specializing.dept_name from Test, Specializing where Specializing.Dr_ID = Test.Dr_ID;
+select count(distinct Insurance) as Number_of_Insurance from(patient);
+select Nurse.N_nurse, Doctor.N_Dr, Patient.N_patient from Nurse, Doctor, Patient where Nurse.Dr_ID = Doctor.Dr_ID and Nurse.P_ID = Patient.P_ID;
+
+
 
 
 
