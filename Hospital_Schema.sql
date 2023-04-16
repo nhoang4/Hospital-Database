@@ -4,30 +4,6 @@ create database Hospital_Schema;
 show databases;
 show full tables;
 
-create table Test
-(
-    test_ID varchar(20) not null,
-    testDate VARCHAR(20),
-    test_Name VARCHAR(20),
-    prescription varchar(50),
-    Dr_ID VARCHAR(20),
-    prescr_price Decimal (5,2),
-    primary key (test_ID),
-    foreign key (Dr_ID)references Doctor(Dr_ID)
-);
-
-create table Nurse
-(
-    Nur_ID VARCHAR(20) not null,
-    Nur_Special VARCHAR(50),
-    N_nurse VARCHAR (20),
-    Dr_ID varchar(20),
-    P_ID varchar(20),
-    primary key (Nur_ID),
-    foreign key (Dr_ID)references Doctor(Dr_ID),
-    foreign key (P_ID) references Patient(P_ID)
-);
-
 create table Doctor (
     /*Doctor (Dr_ID,Dr_Special, N_Dr);*/
     Dr_ID VARCHAR(20) not null,
@@ -47,6 +23,31 @@ create table Patient(
     primary key (P_ID),
     foreign key (Dr_ID) references Doctor(Dr_ID)
     );
+
+create table Nurse
+(
+    Nur_ID VARCHAR(20) not null,
+    Nur_Special VARCHAR(50),
+    N_nurse VARCHAR (20),
+    Dr_ID varchar(20),
+    P_ID varchar(20),
+    primary key (Nur_ID),
+    foreign key (Dr_ID)references Doctor(Dr_ID),
+    foreign key (P_ID) references Patient(P_ID)
+);
+
+create table Test
+(
+    test_ID varchar(20) not null,
+    testDate VARCHAR(20),
+    test_Name VARCHAR(20),
+    prescription varchar(50),
+    Dr_ID VARCHAR(20),
+    prescr_price Decimal (5,2),
+    primary key (test_ID),
+    foreign key (Dr_ID)references Doctor(Dr_ID)
+);
+
 
 create table Administrative(
     Admin_ID VARCHAR (10) not null,
@@ -79,6 +80,7 @@ create table Recieving_Payment
     foreign key (P_ID) references Patient (P_ID),
     foreign key (Admin_ID) references Administrative (Admin_ID)
 );
+
 
 create table PatientNurse
 (
@@ -145,6 +147,33 @@ insert into Patient values ('P123', 'Jacob', '2/21/2021','12/1/2022', 'CIGNA', '
 insert into Patient values ('P124', 'Mashell', '3/21/2022','10/31/2022', 'Molina Health', 'D921');
 
 
+insert into Nurse values ('N900', 'Neurology', 'Percy', 'D924','P124');
+insert into Nurse values ('N901', 'Immunology', 'Annabeth','D900','P100'  );
+insert into Nurse values ('N902', 'Anesthesiology', 'Grover','D923','P123' );
+insert into Nurse values ('N903', 'Dermatology', 'Chiron','D901','P101' );
+insert into Nurse values ('N904', 'Radiology', 'Nico','D922','P122' );
+insert into Nurse values ('N905', 'Emergency Medicine', 'Nico','D902','P102');
+insert into Nurse values ('N906', 'Family Medicine', 'Clarisse','D921','P121' );
+insert into Nurse values ('N907', 'Gynecology', 'Silena','D903','P103' );
+insert into Nurse values ('N908', 'Ophthalmology', 'Cressida','D920','P120' );
+insert into Nurse values ('N909', 'Cardiology', 'Tyson','D904','P104' );
+insert into Nurse values ('N910', 'Orthopedics', 'Aphrodite','D919','P119' );
+insert into Nurse values ('N911', 'Oncology', 'Athena','D905','P105' );
+insert into Nurse values ('N912', 'Pediatrics', 'Ares' ,'D918','P118');
+insert into Nurse values ('N913', 'Psychiatry', 'Charles','D906','P106' );
+insert into Nurse values ('N914', 'Urology', 'Bianca','D917','P107');
+insert into Nurse values ('N915', 'Neurology', 'Ethan','D907','P107' );
+insert into Nurse values ('N916', 'Dermatology', 'Juniper','D916','P106' );
+insert into Nurse values ('N917', 'Gynecology', 'Calypso','D908','P108' );
+insert into Nurse values ('N918', 'Anesthesiology', 'Piper','D915','P115' );
+insert into Nurse values ('N919', 'Family Medicine', 'Jason','D909','P109' );
+insert into Nurse values ('N920', 'Cardiology', 'Leo','D914' ,'P114');
+insert into Nurse values ('N921', 'Orthopedics', 'Apollo','D910' ,'P110');
+insert into Nurse values ('N922', 'Neurology', 'Hermes' ,'D913','P113');
+insert into Nurse values ('N923', 'Family Medicine', 'Hades','D911','P111');
+insert into Nurse values ('N924', 'Urology', 'Persephone','D912','P112');
+
+
 insert into Administrative values ('A900', '0', 1111, 'Katniss' , 'D901');
 insert into Administrative values ('A901', '1', 1112, 'Peeta' , 'D903');
 insert into Administrative values ('A902', '2', 1113,  'Gale' , 'D921');
@@ -197,33 +226,6 @@ insert into Test values ( 'T999', '11/06/22', 'allergy ', 'lisinopril', 'D921', 
 insert into Test values ( 'T433', '12/07/22', 'strep test', 'morphine', 'D922', '100' );
 insert into Test values ( 'T299', '01/08/22', 'bloodwork', 'miralax','D923', '100' );
 insert into Test values ( 'T656', '02/09/22', 'concussion', 'tylenol', 'D924', '100' );
-
-
-insert into Nurse values ('N900', 'Neurology', 'Percy', 'D924','P124');
-insert into Nurse values ('N901', 'Immunology', 'Annabeth','D900','P100'  );
-insert into Nurse values ('N902', 'Anesthesiology', 'Grover','D923','P123' );
-insert into Nurse values ('N903', 'Dermatology', 'Chiron','D901','P101' );
-insert into Nurse values ('N904', 'Radiology', 'Nico','D922','P122' );
-insert into Nurse values ('N905', 'Emergency Medicine', 'Nico','D902','P102');
-insert into Nurse values ('N906', 'Family Medicine', 'Clarisse','D921','P121' );
-insert into Nurse values ('N907', 'Gynecology', 'Silena','D903','P103' );
-insert into Nurse values ('N908', 'Ophthalmology', 'Cressida','D920','P120' );
-insert into Nurse values ('N909', 'Cardiology', 'Tyson','D904','P104' );
-insert into Nurse values ('N910', 'Orthopedics', 'Aphrodite','D919','P119' );
-insert into Nurse values ('N911', 'Oncology', 'Athena','D905','P105' );
-insert into Nurse values ('N912', 'Pediatrics', 'Ares' ,'D918','P118');
-insert into Nurse values ('N913', 'Psychiatry', 'Charles','D906','P106' );
-insert into Nurse values ('N914', 'Urology', 'Bianca','D917','P107');
-insert into Nurse values ('N915', 'Neurology', 'Ethan','D907','P107' );
-insert into Nurse values ('N916', 'Dermatology', 'Juniper','D916','P106' );
-insert into Nurse values ('N917', 'Gynecology', 'Calypso','D908','P108' );
-insert into Nurse values ('N918', 'Anesthesiology', 'Piper','D915','P115' );
-insert into Nurse values ('N919', 'Family Medicine', 'Jason','D909','P109' );
-insert into Nurse values ('N920', 'Cardiology', 'Leo','D914' ,'P114');
-insert into Nurse values ('N921', 'Orthopedics', 'Apollo','D910' ,'P110');
-insert into Nurse values ('N922', 'Neurology', 'Hermes' ,'D913','P113');
-insert into Nurse values ('N923', 'Family Medicine', 'Hades','D911','P111');
-insert into Nurse values ('N924', 'Urology', 'Persephone','D912','P112');
 
 
 insert into Specializing values ('Neurology', 'D900', 'N900');
