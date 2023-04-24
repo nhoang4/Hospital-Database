@@ -5,35 +5,110 @@ try:
                                          database='Hospital_Schema',
                                          user='root',
                                          password='Respond.2021!')
-
-    #sql_select_Query = "select * from Nurse"
     cursor = connection.cursor()
-    # cursor.execute(sql_select_Query)
-    # records = cursor.fetchall()
-    # print("Total number of rows in table: ", cursor.rowcount)
-
-    # print("\nPrinting each row")
-    # for row in records:
-    #     print("Nur_ID = ", row[0], )
-    #     print("Nur_Special = ", row[1])
-    #     print("N_Nurse  = ", row[2])
-    #     print("Dr_ID  = ", row[3])
-    #     print("P_ID  = ", row[4], "\n")
 
 except mysql.connector.Error as e:
     print("Error reading data from MySQL table", e)
 
-
-
-
 def printOption():
-    print('Data Alteration Option: ' +'\n' +
+    print('\nData Alteration Option: ' +'\n' +
           '[1] Add Data'+ '\n' +
           '[2] Delete Data' +'\n' +
           '[3] Aggregate Data' +'\n' +
-          '[4] Ordered Data\n'+
-          '[5] Patient Data\n' +
-          '[6] Exit')
+          '[4] View Tables\n'
+          '[5] Ordered Data\n'+
+          '[6] Patient Data\n' +
+          '[7] Exit')
+    
+def add_func():
+
+    print("[1] add table")
+    print("[2] add row")
+    print('[3] add column')
+
+    option = input("Enter your option as a number: ")
+    if option == '1':
+        print('Existing Tables:')
+        cursor.execute("SHOW TABLES")
+        records = cursor.fetchall()
+        for i in range(len(records)):
+            print([i + 1], (records[i])[0])
+
+        str = input('\nEnter the name of the table do you want to create? ')
+        stri = int(input('\nHow many columns would you like, please enter the digit '))
+        sqlCode = "CREATE TABLE " + str + '('
+        for i in range(stri):
+            strin = input('\nWhat is the name of the column? ')
+            if i != (stri - 1):
+                sqlCode += (strin + " VARCHAR(255), ")
+            else:
+                sqlCode += ( strin + " VARCHAR(255) ")
+
+        sqlCode += ')'
+        try:
+            cursor.execute(sqlCode)
+            print('\nTable ' + str + ' Sucessfully added')
+        except mysql.connector.Error as e:
+            print('Unable to add Table', e)
+            print('\n')
+
+    elif option == '2':
+        print('Existing Tables:')
+        cursor.execute("SHOW TABLES")
+        records = cursor.fetchall()
+        for i in range(len(records)):
+            print([i + 1], (records[i])[0])
+        try:
+            str = input("\nEnter table name to add row to: ")
+            cursor.execute("DESCRIBE " + str)
+            print('Existing Column: ')
+            records = cursor.fetchall()
+            for i in records:
+                print(i[0])
+
+            lst = []
+            for i in range( len(records) ):
+                userInput = input('\nEnter Data for ' + records[i][0]+': ')
+                lst.append(userInput)
+
+            sqlCode = 'Insert into ' + str + ' values('
+
+            for i in range(len(lst)):
+                if i == len(lst) - 1:
+                    sqlCode = sqlCode + "'" + lst[i] + "'"
+                else:
+                    sqlCode = sqlCode + "'" + lst[i] + "'" +','
+
+            sqlCode +=')'
+            try:
+                cursor.execute(sqlCode)
+                print('Row Successfully added')
+            except mysql.connector.Error as e:
+                print('Unable to add new Row to Table ' + str, e)
+                print('\n')
+        except mysql.connector.Error as e:
+           print('Unable to access Table ' + str, e)
+           print('\n')
+
+
+    elif option == '3':
+        print('Existing Tables:')
+        cursor.execute("SHOW TABLES")
+        records = cursor.fetchall()
+        for i in range(len(records)):
+            print([i + 1], (records[i])[0])
+        str = input('\nEnter table name to add a column: ')
+        stri = input('\nWhat is the column name? ')
+        sqlCode = 'ALTER TABLE ' + str + ' ADD ' + stri + ' VARCHAR(255)'
+        try:
+            cursor.execute(sqlCode)
+            print('Column ' + str + ' Successfully added')
+        except mysql.connector.Error as e:
+            print('Unable to add Column to Table '+ str, e)
+            print('\n')
+    else:
+        print("Invalid number called2")
+    return
 
 def del_func():
 
@@ -41,8 +116,8 @@ def del_func():
     print("[2] drop row")
     print('[3] drop column')
 
-    option = int(input("Enter your option as a number: "))
-    if option == 1:
+    option = input("Enter your option as a number: ")
+    if option == '1':
         print('Existing Tables:')
         cursor.execute("SHOW TABLES")
         records = cursor.fetchall()
@@ -51,20 +126,22 @@ def del_func():
 
         str = input('\nEnter the name of the table do you want to delete? ')
         sqlCode = "DROP TABLE " + str
+
         try:
             cursor.execute(sqlCode)
+            print('Successfully deleted table!')
         except mysql.connector.Error as e:
             print('Unable to delete Table', e)
             print('\n')
 
-    elif option == 2:
+    elif option == '2':
         print('Existing Tables:')
         cursor.execute("SHOW TABLES")
         records = cursor.fetchall()
         for i in range(len(records)):
-            print(i + 1, records[i])
+            print([i + 1], (records[i])[0])
 
-        str = input('\nEnter the name of the table do you want to delete? ')
+        str = input('\nEnter the name of the table do you want to delete from? ')
 
         try:
             cursor.execute('select * from '+ str)
@@ -77,44 +154,47 @@ def del_func():
                 cursor.execute("SHOW keys FROM " + str + " WHERE Key_name = 'PRIMARY'")
                 PKs = cursor.fetchall()
                 PK = list(PKs[0])
-                sql_in = 'DELETE FROM ' + str +  ' WHERE ' + PK[4] + ' = '+ "'" + newStr + "'"
+                sql_in = 'DELETE FROM ' + str + ' WHERE ' + PK[4] + ' = '+ "'" + newStr + "'"
                 print(sql_in)
                 cursor.execute(sql_in)
-                print('Successfull Deleted Row with' + PK[4] + 'equals to '+ newStr)
+                print('Successfully Deleted Row with ' + PK[4] + ' equals to '+ newStr)
             except mysql.connector.Error as e:
                 print('Unable to delete Row', e)
                 print('\n')
 
         except mysql.connector.Error as e:
-            print('Unable to access Data', e)
+            print('Unable to access Table', e)
             print('\n')
 
 
-    elif option == 3:
+    elif option == '3':
         print('Existing Tables:')
         cursor.execute("SHOW TABLES")
         records = cursor.fetchall()
         for i in range(len(records)):
-            print(i + 1, records[i])
+            print([i + 1], (records[i])[0])
 
         str = input('\nDisplayed are our tables which table would you like to delete a column from? ')
-        cursor.execute("DESCRIBE " + str)
-        records = cursor.fetchall()
-        for i in records:
-            print(i[0])
-        stri =input('\nDisplayed are the columns, which column would you like deleted? ')
         try:
-            cursor.execute('ALTER TABLE '+ str + ' DROP ' + stri)
-            print("Delete column" +stri+" successfully")
-            # records = cursor.fetchall()
-            # for i in records:
-            #     print(i)
+            cursor.execute("DESCRIBE " + str)
+            records = cursor.fetchall()
+            for i in records:
+                print(i[0])
+            stri =input('\nDisplayed are the columns, which column would you like deleted? ')
+            try:
+                cursor.execute('ALTER TABLE '+ str + ' DROP ' + stri)
+                print("Delete column " +stri+" successfully")
+                # records = cursor.fetchall()
+                # for i in records:
+                #     print(i)
+            except mysql.connector.Error as e:
+                print('Unable to delete Column', e)
+                print('\n')
         except mysql.connector.Error as e:
-            print('Unable to delete Column', e)
+            print('Unable to access Table', e)
             print('\n')
-
     else:
-        print("Invalid number called")
+        print("Invalid number called1")
         # Show database
         # cursor.execute("SHOW TABLES")
         # cursor.execute(removeTable, (drop,))
@@ -124,12 +204,12 @@ def del_func():
         #     print(x)
 
     return
+
 def arrCheck(temp, target):
     for i in temp:
         if i[0].lower() == target.lower():
             return True
     return False
-
 
 def aggregate_func():
     print("\nChoose aggregate function 1-4 ")
@@ -152,14 +232,13 @@ def aggregate_func():
         print("Invalid command. Returing to main menu...")
         return
 
-
 def count():
     sql_in = "select count(*) from "
 
     cursor.execute("SHOW TABLES")
     records = cursor.fetchall()
-    for i in records:
-        print(i)
+    for i in range(len(records)):
+        print([i + 1], (records[i])[0])
     answer = input("Enter table name: ")
 
     if arrCheck(records, answer) == False:
@@ -199,8 +278,6 @@ def count():
         print("Unable to process request", error)
         return
 
-
-# min_max_avg(0) = min(), min_max_avg(1) = max(), min_max_avg(2) = avg()
 def min_max_avg(ind):
     if ind == 0:
         sql_in = "select min("
@@ -215,8 +292,8 @@ def min_max_avg(ind):
     cursor.execute("SHOW TABLES")
 
     records = cursor.fetchall()
-    for i in records:
-        print(i)
+    for i in range(len(records)):
+        print([i + 1], (records[i])[0])
     usr_1 = input('\nEnter the name of the table do you want to access? ')
     if not arrCheck(records, usr_1):
         print("Incorrect entry typed, redirecting...")
@@ -247,12 +324,29 @@ def min_max_avg(ind):
     except mysql.connector.error as error:
         print("Unable to process request", error)
         return
+    
+def view_func():
+    print('Existing Tables:')
+    cursor.execute("SHOW TABLES")
+    records = cursor.fetchall()
+    for i in range(len(records)):
+        print([i + 1], (records[i])[0])
+    str = input('What table do you want to view? ')
+    sql = "SELECT * FROM " + str
+    try:
+        cursor.execute(sql)
+        record = cursor.fetchall()
+        for i in record:
+            print(i)
 
-def add_func():
+    except mysql.connector.Error as e:
+        print('Unable to access data',e)
+        print('/n')
+        
+def special_func1():
+    print("[1] order Ascending")
+    print("[2] order Descending")
 
-    print("[1] add table")
-    print("[2] add row")
-    print('[3] add column')
 
     option = int(input("Enter your option as a number: "))
     if option == 1:
@@ -260,93 +354,57 @@ def add_func():
         cursor.execute("SHOW TABLES")
         records = cursor.fetchall()
         for i in range(len(records)):
-            print(i + 1, records[i])
-
-        str = input('\nEnter the name of the table do you want to create? ')
-        stri = int(input('\nHow many columns would you like, please enter the digit '))
-        sqlCode = "CREATE TABLE " + str + '('
-        for i in range(stri):
-            strin = input('\nWhat is the name of the column? ')
-            if i != (stri - 1):
-                sqlCode += (strin + " VARCHAR(255), ")
-            else:
-                sqlCode += ( strin + " VARCHAR(255) ")
-
-        sqlCode += ')'
-        print(sqlCode)
+            print([i + 1], (records[i])[0])
+        str = input('\nEnter table name to access: ')
+        print('Existing Column: ')
+        cursor.execute("DESCRIBE " + str)
+        records = cursor.fetchall()
+        for i in records:
+            print(i[0])
+        stri = input("\nEnter column name to order: ")
+        sqlCode = ("SELECT * FROM " + str + " ORDER BY " + stri)
         try:
             cursor.execute(sqlCode)
-            print('Table ' + str + ' Sucessfully added')
+            myresult = cursor.fetchall()
+            for x in myresult:
+                print(x)
+            print('Table ' + str + ' Successfully Ordered\n')
         except mysql.connector.Error as e:
-            print('Unable to add Table', e)
+            print('Unable to order Table', e)
             print('\n')
-
-    if option == 2:
+    elif option == 2:
         print('Existing Tables:')
         cursor.execute("SHOW TABLES")
         records = cursor.fetchall()
         for i in range(len(records)):
-            print(i + 1, records[i])
-        str = input("\nWhich table would you like to add a row to?")
-       # sqlCode = "INSERT INTO customers (name, address) VALUES (%s, %s)"
-        #val = ("John", "Highway 21")
-        #mycursor.execute(sql, val)
-
-        # for i in str:
-        # stri = input()
-        try:
-            cursor.execute(sqlCode)
-            print('Row  Sucessfully added')
-        except mysql.connector.Error as e:
-            print('Unable to add Table', e)
-            print('\n')
-
-    if option == 3:
-        print('Existing Tables:')
-        cursor.execute("SHOW TABLES")
+            print([i + 1], (records[i])[0])
+        str = input('\nEnter table name to access: ')
+        print('Existing Column: ')
+        cursor.execute("DESCRIBE " + str)
         records = cursor.fetchall()
-        for i in range(len(records)):
-            print(i + 1, records[i])
-        str = input('\n Which table would you like to add a column to?')
-        stri = input('\nWhat is the column name? ')
-        sqlCode = 'ALTER TABLE ' + str + ' ADD ' + stri + ' VARCHAR(255)'
+        for i in records:
+            print(i[0])
+        stri = input("\nEnter column name to order by: ")
+        sqlCode = ("SELECT * FROM " + str + " ORDER BY " + stri + " DESC")
         try:
             cursor.execute(sqlCode)
-            print('Table ' + str + ' Sucessfully added')
+            myresult = cursor.fetchall()
+            for x in myresult:
+                print(x)
+            print('Table ' + str + ' Successfully Ordered\n')
         except mysql.connector.Error as e:
-            print('Unable to add Table', e)
+            print('Unable to order Table', e)
             print('\n')
-
-    return
-
-def special_func1():
-    print('Existing Tables:')
-    cursor.execute("SHOW TABLES")
-    records = cursor.fetchall()
-    for i in range(len(records)):
-        print(i + 1, records[i])
-    str = input('\nWhich table would you like to access? ')
-    cursor.execute("DESCRIBE " + str)
-    records = cursor.fetchall()
-    for i in records:
-        print(i[0])
-    stri = input ("\nWhich column would you like to order by? ")
-    sqlCode = ("SELECT * FROM " + str+  " ORDER BY " + stri)
-    try:
-        cursor.execute(sqlCode)
-        myresult = cursor.fetchall()
-        for x in myresult:
-            print(x)
-        print('Table ' + str + ' Successfully Ordered\n')
-    except mysql.connector.Error as e:
-        print('Unable to order Table', e)
-        print('\n')
     return
 
 def special_func2():
-    str = input('Which patient do you want to gather information from? ')
-    #select Nurse.N_nurse as Nurse_Namw, Doctor.N_Dr as Doctor_Name, Patient.N_patient as Patient_Name, Administrative.Ad_Ph_Num as Contact_Number from Nurse, Doctor, Patient, Administrative
-    #where Nurse.Dr_ID = Doctor.Dr_ID and Nurse.P_ID = Patient.P_ID and Administrative.Dr_ID = Nurse.Dr_ID;
+    print("Displaying available patients...")
+    cursor.execute("select P_ID, N_patient from patient")
+    record = cursor.fetchall()
+    for i in record:
+        print(i)
+
+    str = input('Enter patient ID to gather data: ')
     try:
         cursor.execute('select Nurse.N_nurse as Nurse_Name, Doctor.N_Dr as Doctor_Name, Patient.N_patient as Patient_Name, Administrative.Ad_Ph_Num as Contact_Number from Nurse, Doctor, Patient, Administrative where Nurse.Dr_ID = Doctor.Dr_ID and Nurse.P_ID = Patient.P_ID and Administrative.Dr_ID = Nurse.Dr_ID and Patient.P_ID = ' + "'"+ str+"'")
         record = cursor.fetchall()
@@ -360,12 +418,11 @@ def special_func2():
     return
 
 
-
 if __name__ == '__main__':
     answer = ''
-    while answer != '6':
+    while answer != '7':
         printOption()
-        print('Enter your option (1-5): ', end='')
+        print('Enter your option (1-7): ', end='')
         answer = input()
         if answer == '1':
             add_func()
@@ -374,8 +431,10 @@ if __name__ == '__main__':
         elif answer == '3':
             aggregate_func()
         elif answer == '4':
-            special_func1()
+            view_func()
         elif answer == '5':
+            special_func1()
+        elif answer == '6':
             special_func2()
 
     cursor.close()
